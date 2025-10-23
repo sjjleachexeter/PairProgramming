@@ -1,22 +1,36 @@
 import java.util.Scanner;
+import java.util.InputMismatchException;
+
 public class Cardgame {
     // take CLI requests for No. of players and .txt file
     public static void main(String[] args){
         Scanner a = new Scanner(System.in);
         int number = -1;
-        System.out.println("Please enter the number of players."); 
-        while (number < 2){
-            // number = a.nextInt();
-            // if (Integer.parseInt(number)) {
-            //     System.out.println("That is not a valid number. Please try again.");
-            //     number = -1;
-            // }
+        String location = "";
+        while(true) {
+            if (number > 2) {
+                break;
+            } else {
+                try {
+                    System.out.println("Please enter the number of players."); 
+                    number = a.nextInt();
+                } catch (InputMismatchException e) {
+                    System.out.println("Error: please enter a valid type.");
+                    a.nextLine();
+                } 
+            }
+
+        }
+        a.nextLine();
+        while(true) {
+            if (location != "") {
+                break;
+            } else {
+                System.out.println("Please enter the location of the file.");
+                location = a.nextLine();
+            }
         }
         
-        System.out.println("Please enter the location of the file.");
-        a.nextLine();
-        String location = a.nextLine();
-
 
     }
     //nested Player class
