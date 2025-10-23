@@ -2,11 +2,13 @@ import java.util.Scanner;
 import java.util.InputMismatchException;
 
 public class Cardgame {
-    // take CLI requests for No. of players and .txt file
+    // the main constructor takes CLI requests for No. of players and .txt file
     public static void main(String[] args){
+        //here we start a scanner to check inputs, which we have to make sure we clear so that the loop checks work
         Scanner a = new Scanner(System.in);
         int number = -1;
         String location = "";
+        //This while loop handles asking for a number of players, and checks the input is a number
         while(true) {
             if (number > 2) {
                 break;
@@ -21,7 +23,9 @@ public class Cardgame {
             }
 
         }
+        //here we clear the buffer so that it doesn't double prompt for the name
         a.nextLine();
+        //this while loop asks for the name of the file (when getting the file, that is when we will handle whether the file name is valid or not)
         while(true) {
             if (location != "") {
                 break;
