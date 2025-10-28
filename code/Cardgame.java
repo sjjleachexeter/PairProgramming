@@ -27,8 +27,8 @@ public class Cardgame {
         //define pick up and put down as one atomic action
         //output for each action
 
-        public Player(){
-            Player player = new Player();
+        public Player(int prefDenom){
+            this.prefDenom = prefDenom;
 
         }
         
@@ -90,7 +90,11 @@ public class Cardgame {
 
 
     class PlayerList {
-        
+        ArrayList<Player> players;
+        for(int i = 1: i<=number: i++){
+            Player player = new Player(i);
+            players.add(player);
+        }
     }
 
 
@@ -154,7 +158,7 @@ public class Cardgame {
     public void getInput() {
         //here we start a scanner to check inputs, which we have to make sure we clear so that the loop checks work
         Scanner a = new Scanner(System.in);
-        number = -1;
+        number = -1; //maybe add int to define?
         location = "";
         //This while loop handles asking for a number of players, and checks the input is a number
         while(true) {
