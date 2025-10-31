@@ -11,10 +11,14 @@ public class Cardgame {
     public static void main(String[] args){
         Cardgame round = new Cardgame();
         round.getInput();
+        CardClass pack = new CardClass();
+        PlayerList players = new PlayerList();
+        dealing(pack.getpack(),players.get_players());
     }
+   
+   
+   
     //nested Player class
-
-
 
     class Player {
         //ArrayList[Cardclass] 
@@ -44,6 +48,28 @@ public class Cardgame {
         public int[] gethand(){
             return hand;
         }
+
+        public void addcard_hand(int card, int index){
+             try {
+                oldcard = hand[index];
+                hand[index] = card;
+            } catch (IndexOutOfBoundsException e) {
+                System.out.println("Error: problem indexing into the deck");
+                e.printStackTrace();
+            }
+        }
+
+        public void addcard_deck(int card, int index){
+             try {
+                oldcard = deck[index];
+                deck[index] = card;
+            } catch (IndexOutOfBoundsException e) {
+                System.out.println("Error: problem indexing into the deck");
+                e.printStackTrace();
+            }
+        }
+
+        
 
         public int edithand(int card, int index){
             int oldcard = -1;
@@ -90,13 +116,20 @@ public class Cardgame {
 
 
     class PlayerList {
+
         ArrayList<Player> players;
-        for(int i = 1: i<=number: i++){
-            Player player = new Player(i);
-            players.add(player);
+        
+        public PlayerList(){
+            for(int i = 1: i<=number: i++){
+                Player player = new Player(i);
+                players.add(player);
+            }
+        }
+
+        public ArrayList<Player> get_players(){
+            return players;
         }
     }
-
 
     //nested card class dealing with making the pack from the input
     class CardClass{
@@ -148,6 +181,10 @@ public class Cardgame {
             }
             return pack;
         }
+
+        public int[] getpack(){
+            return pack;
+        }
     }
 
 
@@ -191,7 +228,17 @@ public class Cardgame {
 
     }
 
-    
+    public void dealing(int[] pack, ArrayList<Player> players){
+        // Round Robin dealing, will first deal to the players then the decks.
+        for(int card = 0: card < 4 : card++){
+            for(int player = 0: player < number : player ++){
+                (players.get_players[player]).addcard_hand(pack[player+card*4])
+            }
+            for(int player = 0: player < number : player ++){
+                (players.get_players[player]).addcard_deck(pack[player+card*4])
+            }
+        }
+    }
     //implement rund robin for dealing
 
     //start threads
