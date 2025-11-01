@@ -11,15 +11,17 @@ public class Cardgame {
     public static void main(String[] args){
         Cardgame round = new Cardgame();
         round.getInput();
+        round.location = round.checkName(round.location);
+
         Cardgame.CardClass pack = round.new CardClass();
         Cardgame.PlayerList players = round.new PlayerList();
 
-        round.dealing(pack.getpack(),players);
+        round.dealing(pack.getpack(),players);                                                                              
 
-        // for (int i=0;i<players.length;i++) {
-        //     players[i].start();
-        //     System.out.println("Player " + players[i].getDenom() + " has started");
-        // }
+        for(int i=0;i<players.get_players().length;i++) {
+            players.get_players()[i].start();
+            System.out.println("Player " + players.get_players()[i].getDenom() + " has started");
+        }
     }
    
    
@@ -66,6 +68,9 @@ public class Cardgame {
         //this synchronised method makes sure that the pick up and put down process is ONE atomic action
         public synchronized void atomicAction(){
             
+
+
+
         }
 
         public void run() {
@@ -200,6 +205,34 @@ public class Cardgame {
         }
     }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     //nested card class dealing with making the pack from the input
     class CardClass{
         //Since we know the size of the pack, we can declare an Int array
@@ -213,19 +246,7 @@ public class Cardgame {
             setPack(location, pack);
         }
 
-        //this method is just to check that the given location has the proper file extension
-        public String checkName(String location) {
-            String txt = ".txt";
-            String fileExtension = location.substring(location.length()-4);
-            String checkforSpace = location.substring(location.length()-1);
-            if (checkforSpace.equals(" ")) {
-                location = location.substring(0, location.length() -1);
-            } 
-            if (!fileExtension.equals(".txt")) {
-                location = location + txt;
-            } 
-            return location;
-        }
+
 
         public int[] setPack(String location, int[] pack) {
             try{
@@ -265,15 +286,7 @@ public class Cardgame {
 
 
 
-
-
-
-
-
-
-
-
-
+    
 
 
 
@@ -293,7 +306,7 @@ public class Cardgame {
         location = "";
         //This while loop handles asking for a number of players, and checks the input is a number
         while(true) {
-            if (number > 2) {
+            if (number >= 2) {
                 break;
             } else {
                 try {
@@ -322,14 +335,34 @@ public class Cardgame {
 
     }
 
+    //this method is just to check that the given location has the proper file extension
+    public String checkName(String location) {
+        String txt = ".txt";
+        if (location.length() >= 4){
+            String fileExtension = location.substring(location.length()-4);
+            String checkforSpace = location.substring(location.length()-1);
+            if (checkforSpace.equals(" ")) {
+                location = location.substring(0, location.length() -1);
+            } 
+            if (!fileExtension.equals(".txt")) {
+                location = location + txt;
+            } 
+        } else {
+            location = location + txt;
+        }
+        return location;
+    }
+
     public void dealing(int[] pack, PlayerList players){
         // Round Robin dealing, will first deal to the players then the decks.
         for(int card = 0; card < 4 ; card++){
             for(int player = 0; player < number ; player ++){
                 (players.get_players()[player]).addcard_hand(pack[player+card*4],card);
             }
+        }
+        for(int card = 0; card < 4 ; card++){
             for(int player = 0 ;  player < number ; player ++){
-                (players.get_players()[player]).addcard_deck(pack[player+card*4],card);
+                (players.get_players()[player]).addcard_deck(pack[number*4+player+card*4],card);
             }
         }
     }
