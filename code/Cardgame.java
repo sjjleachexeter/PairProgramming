@@ -4,6 +4,7 @@ import java.util.*;
 public class Cardgame {
     private int number;
     private String location;
+    private static volatile Boolean gameOver = false; 
 
 
 
@@ -19,22 +20,14 @@ public class Cardgame {
         round.dealing(pack.getpack(),players);                                                                              
 
         for(int i=0;i<players.get_players().length;i++) {
+            System.out.println("Player "+ players.get_players()[i].getDenom() + "'s initial hand is "+ players.get_decks()[i]);
             players.get_players()[i].start();
             System.out.println("Player " + players.get_players()[i].getDenom() + " has started");
         }
+        
     }
    
    
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -48,9 +41,9 @@ public class Cardgame {
         private int[] hand = new int[4];
         private int prefDenom = 0;
         private int nextcard = 0;
-        private int[] deck = new int[4];
+        private Deck owndeck;
+        private Deck disdeck;
         private volatile Boolean won = false;
-        private volatile Boolean gameOver = false; 
         //initiate threads for players
         //define hands
         //define pick up and put down as one atomic action
@@ -62,23 +55,52 @@ public class Cardgame {
 
 
 
+
+
+
         // ################ Setter and getter methods for threads ################# //
         // ######################################################################## //
 
         //this synchronised method makes sure that the pick up and put down process is ONE atomic action
         public synchronized void atomicAction(){
-            
+            //Player must pick from top of their own deck and discard to the bottom of player +1's deck
+            int index = findcard();
+            int draw = getowndeck().getcards()[0];
+            reorderowndeck();
+            System.out.println("Player "+ prefDenom + " has picked up a "+ draw + " from deck " +prefDenom);
+            // Draws the needed card and reorders the deck to be ready to be drawn again
 
+            int discard = edithand(draw, index);
+            disdeck.getcards()[3] = discard;
+            System.out.println("Player "+ prefDenom + " has discarded a "+ discard +" to deck " + (prefDenom+1)%4);
+            // Discard card is given to the right deck
+            System.out.println("Player "+ prefDenom + "'s current hand is "+ owndeck);
 
 
         }
 
         public void run() {
-            System.out.println("Player " + prefDenom + " is running");
+            int[] cards = owndeck.getcards();
+            if((cards[0] == cards[1]) && (cards[1] == cards[2]) && (cards[2] == cards[3])){
+                gameOver = true;
+            }
+            while( !won && !gameOver){
+                atomicAction();
+                cards = owndeck.getcards();
+                if((cards[0] == cards[1]) && (cards[1] == cards[2]) && (cards[2] == cards[3])){
+                    won = true;
+                    gameOver = true;
+                    // PLAYER MUST NOTIFY ALL OTHER PLAYERS THAT THEY HAVE WON HERE
+                }
+            }
+            System.out.println("Player "+ prefDenom + "exits");
+            System.out.println("Player "+ prefDenom + "'s final hand is "+ owndeck);
+
+
+
         }
         
         public void start() {
-            
         }
 
         // ################ Setter and getter methods for attributes ############## //
@@ -101,37 +123,30 @@ public class Cardgame {
             return hand;
         }
 
-        public void setdeck(int[] playerdeck) {
-            this.deck = playerdeck;
+        public void setowndeck(Deck owndeck){
+            this.owndeck = owndeck;
         }
 
-        public int[] getdeck(){
-            return deck;
+        public Deck getowndeck(){
+            return owndeck;
+        }
+
+        public void setdisdeck(Deck disdeck){
+            this.disdeck = disdeck;
+        }
+
+        public Deck getdisdeck(){
+            return disdeck;
         }
 
         public void addcard_hand(int card, int index){
-            int oldcard = -1;
              try {
-                oldcard = hand[index];
                 hand[index] = card;
             } catch (IndexOutOfBoundsException e) {
                 System.out.println("Error: problem indexing into the deck");
                 e.printStackTrace();
             }
         }
-
-        public void addcard_deck(int card, int index){
-            int oldcard = -1;
-             try {
-                oldcard = deck[index];
-                deck[index] = card;
-            } catch (IndexOutOfBoundsException e) {
-                System.out.println("Error: problem indexing into the deck");
-                e.printStackTrace();
-            }
-        }
-
-        
 
         public int edithand(int card, int index){
             int oldcard = -1;
@@ -153,20 +168,24 @@ public class Cardgame {
                 if(hand[i] != getDenom()){
                     if(i == nextcard){
                         index = i;
+                        nextcard = (nextcard+1)%4;
+                        break;
                     }else{
-                    nextcard++;
-                        if(nextcard == 4){
-                        nextcard = 0;
-                        }
+                        nextcard = (nextcard+1)%4;
                     }
                 }else{
-                    nextcard++;
-                    if(nextcard == 4){
-                        nextcard = 0;
-                    }
+                        nextcard = (nextcard+1)%4;
                 }
             }
             return index;
+        }
+
+        public void reorderowndeck(){
+            for(int i = 0 ; i<3 ; i++ ){
+                owndeck.getcards()[i] = owndeck.getcards()[(i+1)%4];
+            }
+            owndeck.getcards()[3] = -1;
+
         }
 
         
@@ -179,6 +198,35 @@ public class Cardgame {
 
 
 
+
+
+    class Deck{
+        int[] cards = new int[4];
+
+        private Deck(){}
+
+        
+        public void addcard(int card, int index){
+             try {
+                cards[index] = card;
+            } catch (IndexOutOfBoundsException e) {
+                System.out.println("Error: problem indexing into the deck");
+                e.printStackTrace();
+            }
+        }
+
+        public int removecard(int index){
+            int card = cards[index];
+            cards[index] = -1;
+            return card;
+        }
+
+        public int[] getcards(){
+            return cards;
+        }
+
+
+    }
 
 
 
@@ -190,39 +238,32 @@ public class Cardgame {
 
     class PlayerList {
 
-        private Player[] players = new Player[number]; 
+        private Player[] players = new Player[number];
+        private Deck[] decks = new Deck[number];
         
         public PlayerList(){
             for(int i = 1; i<=number; i++){
                 Player player = new Player(i);
+                Deck deck = new Deck();
                 
                 players[i-1] = player;
+
+                decks[i-1] = deck;
+            }
+            for(int i = 0; i<number; i++){
+                players[i].setowndeck(decks[i]);
+                players[i].setdisdeck(decks[(i+1)%number]);
             }
         }
 
         public Player[] get_players(){
             return players;
         }
+
+        public Deck[] get_decks(){
+            return decks;
+        }
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -258,6 +299,7 @@ public class Cardgame {
                     n = Integer.parseInt(line);
                     pack[currentIndex] = n; 
                     currentIndex++;
+                file.close();
                 }
             } catch (FileNotFoundException e) {
                 System.out.println("Error: File not found at location");
@@ -277,16 +319,6 @@ public class Cardgame {
         }
     }
 
-
-
-
-
-
-
-
-
-
-    
 
 
 
@@ -362,7 +394,7 @@ public class Cardgame {
         }
         for(int card = 0; card < 4 ; card++){
             for(int player = 0 ;  player < number ; player ++){
-                (players.get_players()[player]).addcard_deck(pack[number*4+player+card*4],card);
+                (players.get_decks()[player]).addcard(pack[number*4+player+card*4],card);
             }
         }
     }
