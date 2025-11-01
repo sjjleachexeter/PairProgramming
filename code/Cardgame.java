@@ -11,9 +11,16 @@ public class Cardgame {
     public static void main(String[] args){
         Cardgame round = new Cardgame();
         round.getInput();
-        CardClass pack = new CardClass();
-        PlayerList players = new PlayerList();
-        dealing(pack.getpack(),players.get_players());
+        Cardgame.CardClass pack = round.new CardClass();
+        Cardgame.PlayerList players = round.new PlayerList();
+
+
+        round.dealing(pack.getpack(),round.players);
+
+        // for (int i=0;i<players.length;i++) {
+        //     players[i].start();
+        //     System.out.println("Player " + players[i].getDenom() + " has started");
+        // }
     }
    
    
@@ -35,12 +42,14 @@ public class Cardgame {
 
    
     //nested Player class
-    class Player implements Runnable {
+    class Player extends Thread {
         //ArrayList[Cardclass] 
         private int[] hand = new int[4];
         private int prefDenom = 0;
         private int nextcard = 0;
         private int[] deck = new int[4];
+        private volatile Boolean won = false;
+        private volatile Boolean gameOver = false; 
         //initiate threads for players
         //define hands
         //define pick up and put down as one atomic action
@@ -49,12 +58,6 @@ public class Cardgame {
         public Player(int prefDenom){
             this.prefDenom = prefDenom;
         }
-
-        
-
-
-
-
 
 
 
@@ -66,18 +69,13 @@ public class Cardgame {
             
         }
 
+        public void run() {
+            System.out.println("Player " + prefDenom + " is running");
+        }
         
-
-
-
-
-
-
-        
-
-
-
-
+        public void start() {
+            
+        }
 
         // ################ Setter and getter methods for attributes ############## //
         // ######################################################################## //
@@ -238,7 +236,7 @@ public class Cardgame {
                 int currentIndex = 0;
                 while ((line = file.readLine()) != null) {
                     n = Integer.parseInt(line);
-                    pack[currentIndex] = n;
+                    pack[currentIndex] = n; 
                     currentIndex++;
                 }
             } catch (FileNotFoundException e) {
