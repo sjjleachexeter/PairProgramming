@@ -17,10 +17,25 @@ public class Cardgame {
     }
    
    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
    
     //nested Player class
-
-    class Player {
+    class Player implements Runnable {
         //ArrayList[Cardclass] 
         private int[] hand = new int[4];
         private int prefDenom = 0;
@@ -33,23 +48,67 @@ public class Cardgame {
 
         public Player(int prefDenom){
             this.prefDenom = prefDenom;
-
         }
+
         
-        // method for getting the denomination
+
+
+
+
+
+
+
+        // ################ Setter and getter methods for threads ################# //
+        // ######################################################################## //
+
+        //this synchronised method makes sure that the pick up and put down process is ONE atomic action
+        public synchronized void atomicAction(){
+            
+        }
+
+        
+
+
+
+
+
+
+        
+
+
+
+
+
+        // ################ Setter and getter methods for attributes ############## //
+        // ######################################################################## //
+        
+    
         public int getDenom() {
             return prefDenom;
         }
         //method that sets the preferred denomination of a player
         public void setDenom(int denomination) {
-            prefDenom = denomination;
+            this.prefDenom = denomination;
+        }
+
+        public void sethand(int[] playerhand) {
+            this.hand = playerhand;
         }
 
         public int[] gethand(){
             return hand;
         }
 
+        public void setdeck(int[] playerdeck) {
+            this.deck = playerdeck;
+        }
+
+        public int[] getdeck(){
+            return deck;
+        }
+
         public void addcard_hand(int card, int index){
+            int oldcard = -1;
              try {
                 oldcard = hand[index];
                 hand[index] = card;
@@ -60,6 +119,7 @@ public class Cardgame {
         }
 
         public void addcard_deck(int card, int index){
+            int oldcard = -1;
              try {
                 oldcard = deck[index];
                 deck[index] = card;
@@ -106,27 +166,39 @@ public class Cardgame {
             }
             return index;
         }
-        
-        //this synchronised method makes sure that the pick up and put down process is ONE atomic action
-        public synchronized void atomicAction(){
-            
-        }
+
         
     }
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     class PlayerList {
 
-        ArrayList<Player> players;
+        private Player[] players = new Player[number]; 
         
         public PlayerList(){
-            for(int i = 1: i<=number: i++){
+            for(int i = 1; i<=number; i++){
                 Player player = new Player(i);
-                players.add(player);
+                
+                players[i-1] = player;
             }
         }
 
-        public ArrayList<Player> get_players(){
+        public Player[] get_players(){
             return players;
         }
     }
@@ -191,6 +263,31 @@ public class Cardgame {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
+
+
     //here we're going to define how to get input
     public void getInput() {
         //here we start a scanner to check inputs, which we have to make sure we clear so that the loop checks work
@@ -228,14 +325,14 @@ public class Cardgame {
 
     }
 
-    public void dealing(int[] pack, ArrayList<Player> players){
+    public void dealing(int[] pack, PlayerList players){
         // Round Robin dealing, will first deal to the players then the decks.
-        for(int card = 0: card < 4 : card++){
-            for(int player = 0: player < number : player ++){
-                (players.get_players[player]).addcard_hand(pack[player+card*4])
+        for(int card = 0; card < 4 ; card++){
+            for(int player = 0; player < number ; player ++){
+                (Cardgame.players.get_players()[player]).addcard_hand(pack[player+card*4]);
             }
-            for(int player = 0: player < number : player ++){
-                (players.get_players[player]).addcard_deck(pack[player+card*4])
+            for(int player = 0 ;  player < number ; player ++){
+                (Cardgame.players.get_players()[player]).addcard_deck(pack[player+card*4]);
             }
         }
     }
