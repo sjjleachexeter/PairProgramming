@@ -14,8 +14,7 @@ public class Cardgame {
         Cardgame.CardClass pack = round.new CardClass();
         Cardgame.PlayerList players = round.new PlayerList();
 
-
-        round.dealing(pack.getpack(),round.players);
+        round.dealing(pack.getpack(),players);
 
         // for (int i=0;i<players.length;i++) {
         //     players[i].start();
@@ -327,10 +326,10 @@ public class Cardgame {
         // Round Robin dealing, will first deal to the players then the decks.
         for(int card = 0; card < 4 ; card++){
             for(int player = 0; player < number ; player ++){
-                (Cardgame.players.get_players()[player]).addcard_hand(pack[player+card*4]);
+                (players.get_players()[player]).addcard_hand(pack[player+card*4],card);
             }
             for(int player = 0 ;  player < number ; player ++){
-                (Cardgame.players.get_players()[player]).addcard_deck(pack[player+card*4]);
+                (players.get_players()[player]).addcard_deck(pack[player+card*4],card);
             }
         }
     }
