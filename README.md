@@ -1,6 +1,8 @@
 ## Cardgame: Spoons
 This is a basic CLI model for the cardgame spoons, which works by having a set number of players who are distributed cards to their hands and individual decks. They then play by picking up from the player to their rights deck and discarding to the player to their lefts deck. The winner is the first player holding only one type of card denomination.
 
+![Alt text](./Assets/spoons.webp)
+
 ### Set up and dependencies
 To run the model please have:
     1. Java working and functional on your IDE of choice or Computer

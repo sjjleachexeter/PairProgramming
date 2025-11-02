@@ -79,6 +79,9 @@ public class Cardgame {
 
         }
 
+        //Run is possibly the most important method in this program as it actually contains the functionality
+        //for how the game is to work, and how the threads are meant to process the atomicAction
+
         public void run() {
             int[] cards = owndeck.getcards();
             if((cards[0] == cards[1]) && (cards[1] == cards[2]) && (cards[2] == cards[3])){
@@ -199,7 +202,8 @@ public class Cardgame {
 
 
 
-
+    //Originally, deck was not a Class we had defined and we just had it as an attribute of player, however Zachary found
+    //that writing it in greatly simplified writing the logic for the game
     class Deck{
         int[] cards = new int[4];
 
@@ -288,7 +292,7 @@ public class Cardgame {
         }
 
 
-
+        //set pack is the function that takes the location input and actually turns it into a useful Array
         public int[] setPack(String location, int[] pack) {
             try{
                 BufferedReader file = new BufferedReader(new FileReader(location));
@@ -296,9 +300,16 @@ public class Cardgame {
                 int n;
                 int currentIndex = 0;
                 while ((line = file.readLine()) != null) {
-                    n = Integer.parseInt(line);
-                    pack[currentIndex] = n; 
-                    currentIndex++;
+                    //here we enclose another try statement in case the contents of the location cannot be passed as ints
+                    try {
+                        n = Integer.parseInt(line);
+                        pack[currentIndex] = n; 
+                        currentIndex++;
+                    } catch (NumberFormatException e){
+                        System.out.println("The contents of the file at the location are not integers, \nplease fix this and try again.");
+                        break;
+                    }
+                    
                 file.close();
                 }
             } catch (FileNotFoundException e) {
@@ -370,6 +381,7 @@ public class Cardgame {
     //this method is just to check that the given location has the proper file extension
     public String checkName(String location) {
         String txt = ".txt";
+        // This statement makes sure that only file names long enough to have .txt are checked for these error
         if (location.length() >= 4){
             String fileExtension = location.substring(location.length()-4);
             String checkforSpace = location.substring(location.length()-1);
@@ -379,6 +391,12 @@ public class Cardgame {
             if (!fileExtension.equals(".txt")) {
                 location = location + txt;
             } 
+            //What follows is a piece of defensive programming to prevent Path traversal attacks
+            //While not completely necessary for this coursework, it was good exploration into basic cybersecurity and dealing with exceptions
+            if (location.contains("..")){
+                System.out.println("For security reasons, you may not have '..' in your file name.");
+            }
+        //If the file name is too short it automatically adds .txt
         } else {
             location = location + txt;
         }
@@ -398,9 +416,4 @@ public class Cardgame {
             }
         }
     }
-    //implement rund robin for dealing
-
-    //start threads
-
-    //declare a winner
 }
