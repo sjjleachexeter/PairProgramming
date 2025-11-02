@@ -75,7 +75,11 @@ public class Cardgame {
             disdeck.getcards()[3] = discard;
             System.out.println("Player "+ prefDenom + " has discarded a "+ discard +" to deck " + (prefDenom+1)%4);
             // Discard card is given to the right deck
-            System.out.println("Player "+ prefDenom + "'s current hand is "+ owndeck);
+            System.out.print("Player " + prefDenom + "'s current hand is ");
+            for (int i = 0; i < 4; i++) {
+                System.out.print(getowndeck().getcards()[i] + " ");
+            }
+            System.out.println();
 
 
         }
@@ -106,8 +110,11 @@ public class Cardgame {
             }
 
             System.out.println("Player "+ prefDenom + " exits");
-            System.out.println("Player "+ prefDenom + "'s final hand is "+ owndeck);
-
+            System.out.print("Player " + prefDenom + "'s final hand is ");
+            for (int i = 0; i < 4; i++) {
+                System.out.print(getowndeck().getcards()[i] + " ");
+            }
+            System.out.println();
 
 
         }
