@@ -5,6 +5,7 @@ public class Cardgame {
     private int number;
     private String location;
     private static volatile Boolean gameOver = false; 
+    private static volatile int winner;
 
 
 
@@ -87,24 +88,30 @@ public class Cardgame {
             if((cards[0] == cards[1]) && (cards[1] == cards[2]) && (cards[2] == cards[3])){
                 gameOver = true;
             }
-            while( !won && !gameOver){
+            while(!gameOver){
                 atomicAction();
                 cards = owndeck.getcards();
                 if((cards[0] == cards[1]) && (cards[1] == cards[2]) && (cards[2] == cards[3])){
                     won = true;
+                    winner = prefDenom;
                     gameOver = true;
-                    // PLAYER MUST NOTIFY ALL OTHER PLAYERS THAT THEY HAVE WON HERE
                 }
             }
-            System.out.println("Player "+ prefDenom + "exits");
+            
+            if(won == true){
+                System.out.println("Player "+ prefDenom + " wins");
+            }else{
+                //Player who has won must inform all the other players who are playing that they've won
+                System.out.println("Player "+ winner + " has informed Player " + prefDenom + " that Player " + winner + " has won");
+            }
+
+            System.out.println("Player "+ prefDenom + " exits");
             System.out.println("Player "+ prefDenom + "'s final hand is "+ owndeck);
 
 
 
         }
         
-        public void start() {
-        }
 
         // ################ Setter and getter methods for attributes ############## //
         // ######################################################################## //
@@ -268,6 +275,7 @@ public class Cardgame {
             return decks;
         }
     }
+
 
 
 
