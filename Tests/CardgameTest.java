@@ -1,7 +1,7 @@
 import java.io.*;
 import java.util.*;
 
-public class Cardgame {
+public class CardgameTest {
     private int number;
     private String location;
     private static volatile Boolean gameOver = false; 
@@ -13,12 +13,12 @@ public class Cardgame {
 
     // the main constructor takes CLI requests for No. of players and .txt file
     public static void main(String[] args){
-        Cardgame round = new Cardgame();
+        CardgameTest round = new CardgameTest();
         round.getInput();
         round.location = round.checkName(round.location);
 
-        Cardgame.CardClass pack = round.new CardClass();
-        Cardgame.PlayerList players = round.new PlayerList();
+        CardgameTest.CardClass pack = round.new CardClass();
+        CardgameTest.PlayerList players = round.new PlayerList();
 
         round.dealing(pack.getpack(),players);                                                                              
 
